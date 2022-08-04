@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<body style="text-align: center">
+	<div id='scores'>
+		<br><br>
+		<p id="ply1">Player 1: <br> <span id="pl1sc">0</span></p>
+		<p id="ply2">Player 2: <br> <span id="pl2sc">0</span></p>
+		<br>
+	</div>
+	{% for i in range(questions|length) %}
+	<span style="color:#333333; font-weight: bold; font-size: 18px;" id={{i|string}} hidden>
+		<br>
+		{{ questions[i]['question']|safe }}<br><br><br>
+		{% for j in range(questions[i]['incorrect_answers']|length) %}
+		<br>
+			{% if questions[i]['incorrect_answers'][j] == questions[i]["correct_answer"] %}
+				<button name="correct" style="position: relative; top: 50px; width: 200px; margin-top: 10px;"; class="myButton" onclick="check(event);">{{ questions[i]['incorrect_answers'][j]|safe }}</button><br>
+			{% else %}
+				<button name="incorrect" style="position: relative; top: 50px; width: 200px; margin-top: 10px;"; class="myButton" onclick="check(event);">{{ questions[i]['incorrect_answers'][j]|safe }}</button><br>
+			{% endif %}
+		{% endfor %}
+		<br>
+	</span>
+	{% endfor %}
+</body>
+
+<script type="text/javascript">
+	<!--
+	var ind = 0;
+	var wrong = 0;
+	document.getElementById(ind.toString()).removeAttribute("hidden");
+	score_keeper();
+
+	function check(event){
+		if (event.currentTarget.name == "correct"){
+			ind++
+			score_keeper();
+		}
+		else{
+			wrong++
+		}
+		disable();
+		color();
+		setTimeout(uncolor, 3000)
+		setTimeout(next, 3700)
+	}
+
+	function disable(){
+		var c = document.getElementsByTagName("button");
+		for (var i=0;i<c.length;i++){
+			c[i].disabled = true;
+		}
+	}
+
+	function enable(){
+		var d = document.getElementsByTagName("button");
+		for (var i=0;i<d.length;i++){
+			d[i].disabled = false;
+		}
+	}
+
+	function next(){
+		document.getElementById((ind + wrong - 1).toString()).hidden = true;
+		if (document.getElementById((ind + wrong).toString()) == null){
+			window.alert("You got " + ind.toString() + " / {{ questions|length }}")
+			pass();
+		}
+		else{
+			document.getElementById((ind + wrong).toString()).removeAttribute("hidden");
+		}
+		enable();
+	}
+
+	function color(){
+		a = document.getElementsByName("incorrect");
+		for (var i=0;i<a.length;i++){
+			a[i].style.border = "3px solid red";
+		}
+		b = document.getElementsByName("correct");
+		for (var i=0;i<b.length;i++){
+			b[i].style.border = "3px solid green";
+		}
+	}
+
+	function uncolor(){
+		a = document.getElementsByName("incorrect");
+		for (var i=0;i<a.length;i++){
+			a[i].style.border = "";
+		}
+		b = document.getElementsByName("correct");
+		for (var i=0;i<b.length;i++){
+			b[i].style.border = "";
+		}
+	}
+
+	function pass(){
+		window.location = window.location.href + '/' + ind.toString();
+	}
+
+    function score_keeper(){
+	    {% if game.done==true %}
+	    	document.getElementById("pl1sc").innerHTML = {{ game.score1 }};
+	    	document.getElementById("pl2sc").innerHTML = ind;
+	    {% else %}
+	    	document.getElementById("pl1sc").innerHTML = ind;
+	    {% endif %}
+    }
+	// -->
+</script>
+{% endblock %}
